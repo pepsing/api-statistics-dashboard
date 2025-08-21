@@ -1,0 +1,228 @@
+/* 全局样式重置和基础设置 */
+* {
+  box-sizing: border-box;
+}
+
+#root {
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* 响应式断点 */
+@media (max-width: 576px) {
+  /* 移动端样式 */
+  .ant-layout-header {
+    padding: 0 16px !important;
+  }
+  
+  .ant-layout-content {
+    padding: 16px !important;
+  }
+  
+  /* 移动端表格优化 */
+  .ant-table-wrapper {
+    overflow-x: auto;
+  }
+  
+  .ant-table-thead > tr > th {
+    white-space: nowrap;
+    font-size: 12px;
+    padding: 8px 4px;
+  }
+  
+  .ant-table-tbody > tr > td {
+    font-size: 12px;
+    padding: 8px 4px;
+  }
+  
+  /* 移动端卡片间距 */
+  .ant-card {
+    margin-bottom: 16px;
+  }
+  
+  /* 移动端统计卡片 */
+  .ant-statistic-title {
+    font-size: 12px;
+  }
+  
+  .ant-statistic-content {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  /* 平板端样式 */
+  .ant-layout-header {
+    flex-direction: column;
+    height: auto;
+    padding: 16px 20px;
+  }
+  
+  .ant-layout-header > div {
+    margin-bottom: 12px;
+  }
+  
+  .ant-layout-header > div:last-child {
+    margin-bottom: 0;
+  }
+  
+  /* 时间选择器在小屏幕上的布局 */
+  .ant-radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .ant-radio-button-wrapper {
+    flex: 1;
+    text-align: center;
+    min-width: 80px;
+  }
+}
+
+@media (max-width: 992px) {
+  /* 中等屏幕样式 */
+  .ant-layout-content {
+    padding: 20px;
+  }
+}
+
+/* 表格响应式优化 */
+.responsive-table {
+  overflow-x: auto;
+}
+
+.responsive-table .ant-table {
+  min-width: 1200px;
+}
+
+/* 卡片响应式优化 */
+.summary-cards .ant-col {
+  margin-bottom: 16px;
+}
+
+/* 加载状态优化 */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 错误状态优化 */
+.error-container {
+  margin: 16px 0;
+}
+
+/* 空状态优化 */
+.empty-container {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+/* 头部响应式优化 */
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.dashboard-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.dashboard-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* 时间选择器响应式 */
+.time-selector-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.time-selector-info {
+  flex: 1;
+  min-width: 200px;
+}
+
+.time-selector-buttons {
+  flex-shrink: 0;
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+  .ant-layout {
+    background: #141414;
+  }
+  
+  .ant-layout-header {
+    background: #1f1f1f;
+    border-bottom: 1px solid #303030;
+  }
+  
+  .ant-card {
+    background: #1f1f1f;
+    border-color: #303030;
+  }
+}
+
+/* 打印样式 */
+@media print {
+  .ant-layout-header,
+  .dashboard-header-right,
+  .ant-pagination {
+    display: none !important;
+  }
+  
+  .ant-layout-content {
+    padding: 0 !important;
+  }
+  
+  .ant-card {
+    box-shadow: none !important;
+    border: 1px solid #d9d9d9 !important;
+  }
+}
+
+/* 无障碍访问优化 */
+.ant-btn:focus,
+.ant-radio-button-wrapper:focus {
+  outline: 2px solid #1890ff;
+  outline-offset: 2px;
+}
+
+/* 高对比度模式支持 */
+@media (prefers-contrast: high) {
+  .ant-statistic-content {
+    font-weight: bold;
+  }
+  
+  .ant-tag {
+    border-width: 2px;
+  }
+}
+
+/* 减少动画模式支持 */
+@media (prefers-reduced-motion: reduce) {
+  .ant-spin,
+  .ant-btn,
+  .ant-card {
+    transition: none !important;
+    animation: none !important;
+  }
+}

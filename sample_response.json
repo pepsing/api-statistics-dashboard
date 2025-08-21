@@ -1,0 +1,147 @@
+{
+    "success": true,
+    "data": [
+        {
+            "id": "4932220e-49c0-4a25-bc38-ff48c310a87a",
+            "name": "guli",
+            "description": "",
+            "tokenLimit": 0,
+            "concurrencyLimit": 0,
+            "rateLimitWindow": 0,
+            "rateLimitRequests": 0,
+            "isActive": true,
+            "claudeAccountId": "",
+            "claudeConsoleAccountId": "",
+            "geminiAccountId": "",
+            "openaiAccountId": "",
+            "permissions": "claude",
+            "enableModelRestriction": false,
+            "restrictedModels": [],
+            "enableClientRestriction": true,
+            "allowedClients": [
+                "claude_code"
+            ],
+            "dailyCostLimit": 50,
+            "tags": [],
+            "createdAt": "2025-08-14T09:31:18.287Z",
+            "lastUsedAt": "2025-08-20T01:04:29.824Z",
+            "expiresAt": "",
+            "createdBy": "admin",
+            "usage": {
+                "total": {
+                    "tokens": 8933087,
+                    "inputTokens": 113297,
+                    "outputTokens": 51117,
+                    "cacheCreateTokens": 1079073,
+                    "cacheReadTokens": 7689600,
+                    "allTokens": 8933087,
+                    "requests": 353,
+                    "cost": 7.168771949999999,
+                    "formattedCost": "$7.17"
+                },
+                "daily": {
+                    "tokens": 15122,
+                    "inputTokens": 334,
+                    "outputTokens": 153,
+                    "cacheCreateTokens": 3304,
+                    "cacheReadTokens": 11331,
+                    "allTokens": 15122,
+                    "requests": 3
+                },
+                "monthly": {
+                    "tokens": 8933087,
+                    "inputTokens": 113297,
+                    "outputTokens": 51117,
+                    "cacheCreateTokens": 1079073,
+                    "cacheReadTokens": 7689600,
+                    "allTokens": 8933087,
+                    "requests": 353
+                },
+                "averages": {
+                    "rpm": 0.04,
+                    "tpm": 19.03,
+                    "dailyRequests": 58.83,
+                    "dailyTokens": 27402.33
+                }
+            },
+            "currentConcurrency": 0,
+            "dailyCost": 0.0179401,
+            "currentWindowRequests": 0,
+            "currentWindowTokens": 0,
+            "windowStartTime": null,
+            "windowEndTime": null,
+            "windowRemainingSeconds": null
+        },
+        {
+            "id": "53d8545b-8309-4b13-8b75-4ecc04633f4f",
+            "name": "yewei",
+            "description": "",
+            "tokenLimit": 0,
+            "concurrencyLimit": 0,
+            "rateLimitWindow": 0,
+            "rateLimitRequests": 0,
+            "isActive": true,
+            "claudeAccountId": "",
+            "claudeConsoleAccountId": "",
+            "geminiAccountId": "",
+            "openaiAccountId": "",
+            "permissions": "claude",
+            "enableModelRestriction": false,
+            "restrictedModels": [],
+            "enableClientRestriction": true,
+            "allowedClients": [
+                "claude_code"
+            ],
+            "dailyCostLimit": 50,
+            "tags": [],
+            "createdAt": "2025-08-15T09:58:36.065Z",
+            "lastUsedAt": "2025-08-19T01:53:04.999Z",
+            "expiresAt": "",
+            "createdBy": "admin",
+            "usage": {
+                "total": {
+                    "tokens": 3008073,
+                    "inputTokens": 30452,
+                    "outputTokens": 28813,
+                    "cacheCreateTokens": 349078,
+                    "cacheReadTokens": 2599730,
+                    "allTokens": 3008073,
+                    "requests": 194,
+                    "cost": 2.5305910999999996,
+                    "formattedCost": "$2.53"
+                },
+                "daily": {
+                    "tokens": 0,
+                    "inputTokens": 0,
+                    "outputTokens": 0,
+                    "cacheCreateTokens": 0,
+                    "cacheReadTokens": 0,
+                    "allTokens": 0,
+                    "requests": 0
+                },
+                "monthly": {
+                    "tokens": 3008073,
+                    "inputTokens": 30452,
+                    "outputTokens": 28813,
+                    "cacheCreateTokens": 349078,
+                    "cacheReadTokens": 2599730,
+                    "allTokens": 3008073,
+                    "requests": 194
+                },
+                "averages": {
+                    "rpm": 0.03,
+                    "tpm": 8.23,
+                    "dailyRequests": 38.8,
+                    "dailyTokens": 11853
+                }
+            },
+            "currentConcurrency": 0,
+            "dailyCost": 0,
+            "currentWindowRequests": 0,
+            "currentWindowTokens": 0,
+            "windowStartTime": null,
+            "windowEndTime": null,
+            "windowRemainingSeconds": null
+        }
+    ]
+}
