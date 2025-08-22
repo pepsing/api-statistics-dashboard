@@ -14,7 +14,8 @@
       "Bash(npm run lint)",
       "Bash(npm run dev:*)",
       "Bash(npm install:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []

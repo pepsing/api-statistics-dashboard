@@ -9,8 +9,8 @@ export class ApiService {
     const env = (import.meta as any)?.env ?? {};
     const isDev = !!env?.DEV;
     const envBaseUrl = env?.VITE_API_BASE_URL as string | undefined;
-    // 开发环境优先使用同源相对路径，借助 Vite 代理规避浏览器 CORS
-    const resolvedBaseUrl = (baseUrl ?? (isDev ? '' : envBaseUrl) ?? envBaseUrl ?? '') as string;
+    // 开发环境使用代理，生产环境使用完整 API URL
+    const resolvedBaseUrl = baseUrl ?? (isDev ? '' : (envBaseUrl || 'https://cc.digix.icu'));
 
     this.client = axios.create({
       baseURL: resolvedBaseUrl || undefined,
