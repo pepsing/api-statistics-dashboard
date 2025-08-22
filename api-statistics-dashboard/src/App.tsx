@@ -27,7 +27,16 @@ function App() {
   }
 
   return (
-    <ConfigProvider locale={zhCN}>
+    <ConfigProvider 
+      locale={zhCN}
+      theme={{
+        algorithm: undefined, // 禁用暗黑主题，强制使用浅色主题
+        token: {
+          colorBgBase: '#ffffff',
+          colorTextBase: '#000000',
+        }
+      }}
+    >
       <ErrorBoundary>
         {isAuthenticated && token ? (
           <DashboardComponent

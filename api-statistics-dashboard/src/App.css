@@ -93,7 +93,7 @@
 }
 
 .responsive-table .ant-table {
-  min-width: 1200px;
+  min-width: auto;
 }
 
 /* 卡片响应式优化 */
@@ -164,21 +164,33 @@
   flex-shrink: 0;
 }
 
-/* 深色模式支持 */
-@media (prefers-color-scheme: dark) {
-  .ant-layout {
-    background: #141414;
-  }
-  
-  .ant-layout-header {
-    background: #1f1f1f;
-    border-bottom: 1px solid #303030;
-  }
-  
-  .ant-card {
-    background: #1f1f1f;
-    border-color: #303030;
-  }
+/* 强制浅色模式 */
+.ant-layout {
+  background: #f0f2f5 !important;
+}
+
+.ant-layout-header {
+  background: #fff !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+}
+
+.ant-card {
+  background: #fff !important;
+  border-color: #d9d9d9 !important;
+}
+
+/* 截图样式优化 */
+.screenshot-mode .ant-layout-header {
+  position: static !important;
+  box-shadow: none !important;
+}
+
+.screenshot-mode .ant-table-wrapper {
+  overflow: visible !important;
+}
+
+.screenshot-mode .ant-table-body {
+  overflow: visible !important;
 }
 
 /* 打印样式 */
@@ -226,3 +238,4 @@
     animation: none !important;
   }
 }
+

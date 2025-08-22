@@ -4,9 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a React-based API statistics dashboard for monitoring Claude API usage. The application displays API key usage statistics, costs, and rate limiting information through a web interface with authentication.
+This is a React-based API statistics dashboard for monitoring Claude API usage. The application displays comprehensive API key usage statistics across four time dimensions (today, 7 days, monthly, total) with costs and rate limiting information through a single-page interface with authentication.
 
 ## Key Commands
+
+**Important**: All commands must be run from the `api-statistics-dashboard/` directory.
 
 ### Development
 - `npm run dev` - Start development server (runs on http://localhost:5173)
@@ -37,20 +39,39 @@ The main application is located in `api-statistics-dashboard/` directory:
 
 ### Data Flow
 1. Authentication through `AuthComponent` validates tokens
-2. `DashboardComponent` fetches API usage data via `ApiService`
-3. `DataTransformer` processes raw API data for table display
-4. Components use custom hooks (`useAuth`, `useSorting`, `useRetry`) for state management
+2. `DashboardComponent` fetches comprehensive API usage data via `ApiService`
+3. Four parallel API requests retrieve data for different time ranges (today, 7days, monthly, all)
+4. `DataTransformer` processes and merges raw API data for unified display
+5. Components use custom hooks (`useAuth`, `useSorting`, `useRetry`) for state management
+6. Single-page layout displays all time dimensions simultaneously
 
 ### API Integration
-- Proxied through Vite dev server (`/admin` → `https://cc.digix.icu`)
+- Proxied through Vite dev server (`/admin` → `https://cc.digix.icu`) for CORS handling
 - Bearer token authentication with automatic retry logic
-- Comprehensive error handling for network/auth/API errors
-- Auto-refresh every 5 minutes
+- **Multi-timerange data fetching**: Parallel requests to `/admin/api-keys?timeRange={today|7days|monthly|all}`
+- Comprehensive error handling for network/auth/API errors (401/403/404/500/network)
+- Auto-refresh every 5 minutes with configurable polling
+- Environment variable support: `VITE_API_BASE_URL` for production deployments
 
 ## Development Notes
 
 - All components are written in TypeScript with strict typing
-- Chinese UI text throughout the application
-- Export functionality generates CSV files with Chinese headers
-- Responsive design with mobile viewport support in testing
+- Chinese UI text throughout the application (uses antd zhCN locale)
+- **Multi-dimensional data display**: Single interface shows today/7days/monthly/total data
+- Export functionality generates comprehensive CSV files with all time dimensions
+- Screenshot export captures complete dashboard for sharing
+- Responsive design with mobile viewport support and 100 items per page default
 - Error boundaries and loading states for robust UX
+- Class-based `ApiService` for HTTP client management with interceptors
+- Custom hooks pattern for reusable state logic (`useAuth`, `useSorting`, `useRetry`, `useResponsive`)
+
+## Important Implementation Details
+
+- Authentication tokens are stored in localStorage and validated on app init
+- **Parallel API architecture**: Four simultaneous requests merge into unified data structure
+- API service uses axios with request/response interceptors for auth and error handling
+- Development proxy configuration handles CORS issues with external API
+- **Comprehensive table columns**: Basic info + 4 time dimensions + daily averages (17 total columns)
+- Three-state sorting: descending → ascending → no sort for all columns
+- Component testing uses Playwright for E2E scenarios including mobile viewports
+- Build process includes TypeScript compilation followed by Vite bundling

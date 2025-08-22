@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { Layout, Card, Button, Space, Typography } from 'antd';
+import React, { useState, useEffect, useRef } from 'react';
+import { Layout, Card, Button, Space, Typography, message } from 'antd';
 import { 
   ReloadOutlined, 
   LogoutOutlined, 
   DashboardOutlined,
-  ClockCircleOutlined,
   DownloadOutlined,
+  CameraOutlined,
 } from '@ant-design/icons';
+import html2canvas from 'html2canvas';
 import { SummaryCards } from './SummaryCards';
-import { TimeRangeSelector } from './TimeRangeSelector';
 import { DataTable } from '../DataTable';
 import { LoadingSpinner, EmptyState, RetryableError } from '../common';
 import { apiService } from '../../services/apiService';
 import { DataTransformer } from '../../services/dataTransformer';
 import { useSorting } from '../../hooks';
-import { type ApiKeyData, type TimeRange, ErrorType, type AppError, type ProcessedApiKeyData } from '../../types';
+import { type ApiKeyData, ErrorType, type AppError, type ProcessedApiKeyData } from '../../types';
 
 const { Header, Content } = Layout;
 const { Title, Text } = Typography;
@@ -29,10 +29,11 @@ export const DashboardComponent: React.FC<DashboardComponentProps> = ({
   onLogout,
 }) => {
   const [data, setData] = useState<ApiKeyData[]>([]);
-  const [timeRange, setTimeRange] = useState<TimeRange>('total');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<AppError | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
+  const dashboardRef = useRef<HTMLDivElement>(null);
 
   // 处理表格数据
   const processedData = React.useMemo(() => {
@@ -49,7 +50,7 @@ export const DashboardComponent: React.FC<DashboardComponentProps> = ({
     
     try {
       apiService.setAuthToken(token);
-      const response = await apiService.fetchApiKeys();
+      const response = await apiService.fetchCompleteApiKeys();
       setData(response.data);
       setLastUpdated(new Date());
     } catch (err: any) {
@@ -85,10 +86,6 @@ export const DashboardComponent: React.FC<DashboardComponentProps> = ({
     return () => clearInterval(interval);
   }, [isLoading, token]);
 
-  const handleTimeRangeChange = (value: TimeRange) => {
-    setTimeRange(value);
-  };
-
   const handleRefresh = () => {
     fetchData();
   };
@@ -97,26 +94,95 @@ export const DashboardComponent: React.FC<DashboardComponentProps> = ({
     onLogout();
   };
 
+  // 导出页面截图
+  const handleScreenshot = async () => {
+    if (!dashboardRef.current || isExporting) {
+      return;
+    }
+
+    setIsExporting(true);
+    const hideMessage = message.loading('正在生成截图，请稍候...', 0);
+
+    try {
+      // 添加截图模式类名以优化样式
+      const layoutElement = document.querySelector('.ant-layout');
+      layoutElement?.classList.add('screenshot-mode');
+
+      // 等待样式应用
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      const canvas = await html2canvas(dashboardRef.current, {
+        backgroundColor: '#f0f2f5',
+        scale: window.devicePixelRatio || 1,
+        logging: false,
+        useCORS: true,
+        allowTaint: true,
+        width: dashboardRef.current.scrollWidth,
+        height: dashboardRef.current.scrollHeight,
+        onclone: (clonedDoc: Document) => {
+          // 在克隆的文档中也应用截图样式
+          const clonedLayout = clonedDoc.querySelector('.ant-layout');
+          clonedLayout?.classList.add('screenshot-mode');
+        }
+      } as any);
+
+      // 移除截图模式类名
+      layoutElement?.classList.remove('screenshot-mode');
+
+      const ts = new Date();
+      const pad = (n: number) => String(n).padStart(2, '0');
+      const filename = `api-dashboard-${ts.getFullYear()}${pad(ts.getMonth() + 1)}${pad(ts.getDate())}_${pad(ts.getHours())}${pad(ts.getMinutes())}${pad(ts.getSeconds())}.png`;
+
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = filename;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+          message.success('截图已保存到下载文件夹');
+        } else {
+          message.error('生成截图失败');
+        }
+      }, 'image/png', 0.9);
+    } catch (error) {
+      console.error('Screenshot failed:', error);
+      message.error('生成截图失败，请重试');
+      // 确保移除截图模式类名
+      const layoutElement = document.querySelector('.ant-layout');
+      layoutElement?.classList.remove('screenshot-mode');
+    } finally {
+      hideMessage();
+      setIsExporting(false);
+    }
+  };
+
   // 导出为 Excel（CSV）
   const handleExport = () => {
     const rows: Array<Record<string, string | number>> = [];
 
     const makeRow = (item: ProcessedApiKeyData) => ({
       名称: item.name,
-      状态: item.status === 'active' ? '活跃' : '非活跃',
-      最后使用: item.lastUsed,
-      '今日-请求数': item.daily.requests,
-      '今日-令牌数': item.daily.tokens,
-      '今日-成本($)': Number(item.daily.cost.toFixed(2)),
-      '本周-请求数': item.weekly.requests,
-      '本周-令牌数': item.weekly.tokens,
-      '本周-成本($)': Number(item.weekly.cost.toFixed(2)),
-      '本月-请求数': item.monthly.requests,
-      '本月-令牌数': item.monthly.tokens,
-      '本月-成本($)': Number(item.monthly.cost.toFixed(2)),
+      '今日-请求数': item.today.requests,
+      '今日-令牌数': item.today.tokens,
+      '今日-成本($)': Number(item.today.cost.toFixed(2)),
+      '7天-请求数': item.sevenDays.requests,
+      '7天-令牌数': item.sevenDays.tokens,
+      '7天-成本($)': Number(item.sevenDays.cost.toFixed(2)),
+      '月度-请求数': item.monthly.requests,
+      '月度-令牌数': item.monthly.tokens,
+      '月度-成本($)': Number(item.monthly.cost.toFixed(2)),
       '总计-请求数': item.total.requests,
       '总计-令牌数': item.total.tokens,
       '总计-成本($)': Number(item.total.cost.toFixed(2)),
+      '日均-请求数': item.daily.requests,
+      '日均-令牌数': item.daily.tokens,
+      状态: item.status === 'active' ? '活跃' : '非活跃',
+      创建时间: item.createdAt,
+      最后使用: item.lastUsed,
     });
 
     sortedData.forEach((item) => rows.push(makeRow(item)));
@@ -155,9 +221,23 @@ export const DashboardComponent: React.FC<DashboardComponentProps> = ({
   };
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Header style={{ position: 'sticky', top: 0, zIndex: 1, background: '#fff', boxShadow: '0 2px 8px #f0f1f2' }}>
-        <Space align="center" style={{ width: '100%', justifyContent: 'space-between' }}>
+    <Layout style={{ minHeight: '100vh', width: '100%' }}>
+      <Header style={{ 
+        position: 'sticky', 
+        top: 0, 
+        zIndex: 1, 
+        background: '#fff', 
+        boxShadow: '0 2px 8px #f0f1f2',
+        width: '100%',
+        padding: '0 24px'
+      }}>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between',
+          width: '100%',
+          maxWidth: 'none'
+        }}>
           <Space>
             <DashboardOutlined style={{ fontSize: 24 }} />
             <Title level={4} style={{ margin: 0 }}>API统计仪表板</Title>
@@ -165,25 +245,34 @@ export const DashboardComponent: React.FC<DashboardComponentProps> = ({
           <Space>
             <Button icon={<ReloadOutlined />} onClick={handleRefresh}>刷新</Button>
             <Button icon={<DownloadOutlined />} onClick={handleExport} disabled={sortedData.length === 0}>导出 Excel</Button>
+            <Button 
+              icon={<CameraOutlined />} 
+              onClick={handleScreenshot} 
+              disabled={sortedData.length === 0 || isExporting}
+              loading={isExporting}
+            >
+              导出图片
+            </Button>
             <Button type="primary" danger icon={<LogoutOutlined />} onClick={handleLogout}>退出登录</Button>
           </Space>
-        </Space>
+        </div>
       </Header>
 
-      <Content style={{ margin: '24px' }}>
+      <Content 
+        ref={dashboardRef}
+        style={{ 
+          padding: '24px', 
+          width: '100%',
+          maxWidth: 'none',
+          overflow: 'hidden'
+        }}
+      >
         <Space direction="vertical" size={16} style={{ width: '100%' }}>
-          <Card>
-            <Space align="center" size={16} style={{ width: '100%', justifyContent: 'space-between' }}>
-              <Space>
-                <ClockCircleOutlined />
-                <Text>时间范围：</Text>
-                <TimeRangeSelector value={timeRange} onChange={handleTimeRangeChange} />
-              </Space>
-              {lastUpdated && (
-                <Text type="secondary">上次更新时间：{lastUpdated.toLocaleString()}</Text>
-              )}
-            </Space>
-          </Card>
+          {lastUpdated && (
+            <div style={{ textAlign: 'right', marginBottom: '8px' }}>
+              <Text type="secondary">上次更新时间：{lastUpdated.toLocaleString()}</Text>
+            </div>
+          )}
 
           {error ? (
             <RetryableError error={error} onRetry={handleRefresh} />
@@ -193,8 +282,8 @@ export const DashboardComponent: React.FC<DashboardComponentProps> = ({
             <EmptyState title="暂无数据" description="请检查您的认证令牌或稍后重试。" />
           ) : (
             <>
-              <SummaryCards data={data} timeRange={timeRange} />
-              <Card>
+              <SummaryCards data={data} />
+              <Card style={{ width: '100%', overflow: 'auto' }}>
                 <DataTable data={sortedData} sortConfig={sortConfig} onSort={handleSort} loading={isLoading} />
               </Card>
             </>

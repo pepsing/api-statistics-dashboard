@@ -1,17 +1,53 @@
 import { type
   ApiKeyData, 
   type ProcessedApiKeyData, 
-  type SummaryData, 
-  type UsageMetrics, 
-  type TimeRange 
+  type SummaryData 
 } from '../types';
 
 export class DataTransformer {
   /**
-   * 解析成本数值 - 优先使用 cost，否则从 formattedCost 解析
+   * 获取默认的空使用统计数据
    */
-  private static parseCost(usage: { cost?: number; formattedCost?: string } | undefined | null): number {
+  private static getEmptyUsageStats(): any {
+    return {
+      requests: 0,
+      tokens: 0,
+      inputTokens: 0,
+      outputTokens: 0,
+      cacheCreateTokens: 0,
+      cacheReadTokens: 0,
+      allTokens: 0,
+      cost: 0,
+      formattedCost: '$0.000000'
+    };
+  }
+
+  /**
+   * 基于token数计算成本（粗略估算）
+   * Claude API cost: ~$0.0008 per 1K input tokens, ~$0.0024 per 1K output tokens
+   */
+  private static estimateCostFromTokens(usage: any): number {
     if (!usage) return 0;
+    
+    const inputTokens = usage.inputTokens || 0;
+    const outputTokens = usage.outputTokens || 0;
+    const cacheCreateTokens = usage.cacheCreateTokens || 0;
+    const cacheReadTokens = usage.cacheReadTokens || 0;
+    
+    // 粗略的成本估算
+    const inputCost = inputTokens * 0.0008 / 1000;
+    const outputCost = outputTokens * 0.0024 / 1000; 
+    const cacheCost = (cacheCreateTokens + cacheReadTokens) * 0.0001 / 1000; // 假设缓存成本更低
+    
+    return inputCost + outputCost + cacheCost;
+  }
+
+  /**
+   * 解析或计算成本数值 - 优先使用 cost，否则从 formattedCost 解析，最后基于token估算
+   */
+  private static parseCost(usage: { cost?: number; formattedCost?: string; inputTokens?: number; outputTokens?: number; cacheCreateTokens?: number; cacheReadTokens?: number } | undefined | null): number {
+    if (!usage) return 0;
+    
     // 优先使用 cost 字段
     if (typeof usage.cost === 'number') {
       return usage.cost;
@@ -22,53 +58,23 @@ export class DataTransformer {
       const match = usage.formattedCost.match(/[\d.]+/);
       if (match) {
         const parsed = parseFloat(match[0]);
-        return isNaN(parsed) ? 0 : parsed;
+        if (!isNaN(parsed)) return parsed;
       }
     }
     
-    return 0;
+    // 如果都没有，基于token数估算成本
+    return this.estimateCostFromTokens(usage);
   }
 
-  /**
-   * 计算周数据（基于日和月数据推算）
-   * 由于API没有直接提供周数据，我们使用以下逻辑：
-   * - 如果有日数据，周数据 = 日数据 * 7（简化估算）
-   * - 如果没有日数据但有月数据，周数据 = 月数据 / 4（简化估算）
-   */
-  static calculateWeeklyData(apiKeyData: ApiKeyData): UsageMetrics {
-    const { daily, monthly } = apiKeyData.usage;
-    
-    let weeklyRequests = 0;
-    let weeklyTokens = 0;
-    let weeklyCost = 0;
-
-    if (daily.requests > 0) {
-      // 基于日数据估算周数据
-      weeklyRequests = daily.requests * 7;
-      weeklyTokens = daily.tokens * 7;
-      weeklyCost = this.parseCost(daily) * 7;
-    } else if (monthly.requests > 0) {
-      // 基于月数据估算周数据
-      weeklyRequests = Math.round(monthly.requests / 4);
-      weeklyTokens = Math.round(monthly.tokens / 4);
-      weeklyCost = this.parseCost(monthly) / 4;
-    }
-
-    return {
-      requests: weeklyRequests,
-      tokens: weeklyTokens,
-      cost: weeklyCost,
-      formattedCost: `$${weeklyCost.toFixed(2)}`,
-    };
-  }
 
   /**
-   * 计算汇总数据
+   * 计算汇总数据（四个时间维度）
    */
-  static calculateSummary(data: ApiKeyData[], timeRange: TimeRange): SummaryData {
-    let totalRequests = 0;
-    let totalTokens = 0;
-    let totalCost = 0;
+  static calculateSummary(data: ApiKeyData[]): SummaryData {
+    let todayRequests = 0, todayTokens = 0, todayCost = 0;
+    let sevenDaysRequests = 0, sevenDaysTokens = 0, sevenDaysCost = 0;
+    let monthlyRequests = 0, monthlyTokens = 0, monthlyCost = 0;
+    let totalRequests = 0, totalTokens = 0, totalCost = 0;
     let activeKeys = 0;
 
     data.forEach((apiKey) => {
@@ -76,30 +82,52 @@ export class DataTransformer {
         activeKeys++;
       }
 
-      if (timeRange === 'daily') {
-        totalRequests += apiKey.usage.daily.requests || 0;
-        totalTokens += apiKey.usage.daily.tokens || 0;
-        totalCost += this.parseCost(apiKey.usage.daily);
-      } else if (timeRange === 'weekly') {
-        const weekly = this.calculateWeeklyData(apiKey);
-        totalRequests += weekly.requests || 0;
-        totalTokens += weekly.tokens || 0;
-        totalCost += weekly.cost || 0;
-      } else if (timeRange === 'monthly') {
-        totalRequests += apiKey.usage.monthly.requests || 0;
-        totalTokens += apiKey.usage.monthly.tokens || 0;
-        totalCost += this.parseCost(apiKey.usage.monthly);
-      } else {
-        totalRequests += apiKey.usage.total.requests || 0;
-        totalTokens += apiKey.usage.total.tokens || 0;
-        totalCost += this.parseCost(apiKey.usage.total);
-      }
+      // 今日数据
+      const todayData = apiKey.usage.today || this.getEmptyUsageStats();
+      todayRequests += todayData.requests || 0;
+      todayTokens += todayData.tokens || 0;
+      todayCost += this.parseCost(todayData);
+
+      // 7天数据
+      const sevenDaysData = apiKey.usage.sevenDays || this.getEmptyUsageStats();
+      sevenDaysRequests += sevenDaysData.requests || 0;
+      sevenDaysTokens += sevenDaysData.tokens || 0;
+      sevenDaysCost += this.parseCost(sevenDaysData);
+
+      // 月度数据
+      const monthlyData = apiKey.usage.monthly || this.getEmptyUsageStats();
+      monthlyRequests += monthlyData.requests || 0;
+      monthlyTokens += monthlyData.tokens || 0;
+      monthlyCost += this.parseCost(monthlyData);
+
+      // 总计数据
+      const totalData = apiKey.usage.total || this.getEmptyUsageStats();
+      totalRequests += totalData.requests || 0;
+      totalTokens += totalData.tokens || 0;
+      totalCost += this.parseCost(totalData);
     });
 
     return {
-      totalRequests,
-      totalTokens,
-      totalCost,
+      today: {
+        totalRequests: todayRequests,
+        totalTokens: todayTokens,
+        totalCost: todayCost,
+      },
+      sevenDays: {
+        totalRequests: sevenDaysRequests,
+        totalTokens: sevenDaysTokens,
+        totalCost: sevenDaysCost,
+      },
+      monthly: {
+        totalRequests: monthlyRequests,
+        totalTokens: monthlyTokens,
+        totalCost: monthlyCost,
+      },
+      total: {
+        totalRequests: totalRequests,
+        totalTokens: totalTokens,
+        totalCost: totalCost,
+      },
       activeKeys,
     };
   }
@@ -109,35 +137,54 @@ export class DataTransformer {
    */
   static processTableData(data: ApiKeyData[]): ProcessedApiKeyData[] {
     return data.map((apiKey) => {
-      const weekly = this.calculateWeeklyData(apiKey);
+      // 安全地获取数据，如果字段不存在则使用默认值
+      const todayData = apiKey.usage.today || this.getEmptyUsageStats();
+      const sevenDaysData = apiKey.usage.sevenDays || this.getEmptyUsageStats();
+      const monthlyData = apiKey.usage.monthly || this.getEmptyUsageStats();
+      const totalData = apiKey.usage.total || this.getEmptyUsageStats();
+      const dailyData = apiKey.usage.daily || this.getEmptyUsageStats();
       
-      const dailyCost = this.parseCost(apiKey.usage.daily);
-      const monthlyCost = this.parseCost(apiKey.usage.monthly);
-      const totalCost = this.parseCost(apiKey.usage.total);
+      const todayCost = this.parseCost(todayData);
+      const sevenDaysCost = this.parseCost(sevenDaysData);
+      const monthlyCost = this.parseCost(monthlyData);
+      const totalCost = this.parseCost(totalData);
+      const dailyCost = this.parseCost(dailyData);
       
       return {
         id: apiKey.id,
         name: apiKey.name,
         status: apiKey.isActive ? 'active' : 'inactive',
+        createdAt: this.formatDate(apiKey.createdAt),
         lastUsed: this.formatDate(apiKey.lastUsedAt),
-        daily: {
-          requests: apiKey.usage.daily.requests,
-          tokens: apiKey.usage.daily.tokens,
-          cost: dailyCost,
-          formattedCost: apiKey.usage.daily.formattedCost || `$${dailyCost.toFixed(2)}`,
+        today: {
+          requests: todayData.requests || 0,
+          tokens: todayData.tokens || 0,
+          cost: todayCost,
+          formattedCost: todayData.formattedCost || `$${todayCost.toFixed(2)}`,
         },
-        weekly,
+        sevenDays: {
+          requests: sevenDaysData.requests || 0,
+          tokens: sevenDaysData.tokens || 0,
+          cost: sevenDaysCost,
+          formattedCost: sevenDaysData.formattedCost || `$${sevenDaysCost.toFixed(2)}`,
+        },
         monthly: {
-          requests: apiKey.usage.monthly.requests,
-          tokens: apiKey.usage.monthly.tokens,
+          requests: monthlyData.requests || 0,
+          tokens: monthlyData.tokens || 0,
           cost: monthlyCost,
-          formattedCost: apiKey.usage.monthly.formattedCost || `$${monthlyCost.toFixed(2)}`,
+          formattedCost: monthlyData.formattedCost || `$${monthlyCost.toFixed(2)}`,
         },
         total: {
-          requests: apiKey.usage.total.requests,
-          tokens: apiKey.usage.total.tokens,
+          requests: totalData.requests || 0,
+          tokens: totalData.tokens || 0,
           cost: totalCost,
-          formattedCost: apiKey.usage.total.formattedCost || `$${totalCost.toFixed(2)}`,
+          formattedCost: totalData.formattedCost || `$${totalCost.toFixed(2)}`,
+        },
+        daily: {
+          requests: dailyData.requests || 0,
+          tokens: dailyData.tokens || 0,
+          cost: dailyCost,
+          formattedCost: dailyData.formattedCost || `$${dailyCost.toFixed(2)}`,
         },
       };
     });
@@ -164,7 +211,7 @@ export class DataTransformer {
       } else {
         return date.toLocaleDateString('zh-CN');
       }
-    } catch (error) {
+    } catch {
       return '日期格式错误';
     }
   }
@@ -174,6 +221,18 @@ export class DataTransformer {
    */
   static formatNumber(num: number): string {
     return num.toLocaleString('zh-CN');
+  }
+
+  /**
+   * 格式化令牌数为 K/M 格式
+   */
+  static formatTokens(value: number): string {
+    if (value >= 1000000) {
+      return `${(value / 1000000).toFixed(1)}M`;
+    } else if (value >= 1000) {
+      return `${(value / 1000).toFixed(1)}K`;
+    }
+    return value.toString();
   }
 
   /**

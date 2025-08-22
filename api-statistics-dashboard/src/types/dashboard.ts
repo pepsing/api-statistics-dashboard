@@ -3,11 +3,13 @@ export interface ProcessedApiKeyData {
   id: string;
   name: string;
   status: 'active' | 'inactive';
+  createdAt: string;
   lastUsed: string;
-  daily: UsageMetrics;
-  weekly: UsageMetrics;
+  today: UsageMetrics;
+  sevenDays: UsageMetrics;
   monthly: UsageMetrics;
   total: UsageMetrics;
+  daily: UsageMetrics; // 日均数据作为参考
 }
 
 export interface UsageMetrics {
@@ -18,15 +20,32 @@ export interface UsageMetrics {
 }
 
 export interface SummaryData {
-  totalRequests: number;
-  totalTokens: number;
-  totalCost: number;
+  today: {
+    totalRequests: number;
+    totalTokens: number;
+    totalCost: number;
+  };
+  sevenDays: {
+    totalRequests: number;
+    totalTokens: number;
+    totalCost: number;
+  };
+  monthly: {
+    totalRequests: number;
+    totalTokens: number;
+    totalCost: number;
+  };
+  total: {
+    totalRequests: number;
+    totalTokens: number;
+    totalCost: number;
+  };
   activeKeys: number;
 }
 
-export type TimeRange = 'daily' | 'weekly' | 'monthly' | 'total';
+export type TimeRange = 'today' | '7days' | 'monthly' | 'all';
 
 export interface SortConfig {
-  field: string;
-  direction: 'asc' | 'desc';
+  field: string | null;
+  direction: 'asc' | 'desc' | null;
 }

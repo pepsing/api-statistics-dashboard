@@ -1,0 +1,169 @@
+{
+    "success": true,
+    "data": [
+        {
+            "id": "4932220e-49c0-4a25-bc38-ff48c310a87a",
+            "name": "guli",
+            "description": "",
+            "tokenLimit": 0,
+            "concurrencyLimit": 0,
+            "rateLimitWindow": 0,
+            "rateLimitRequests": 0,
+            "isActive": true,
+            "claudeAccountId": "",
+            "claudeConsoleAccountId": "",
+            "geminiAccountId": "",
+            "openaiAccountId": "",
+            "permissions": "claude",
+            "enableModelRestriction": false,
+            "restrictedModels": [],
+            "enableClientRestriction": true,
+            "allowedClients": [
+                "claude_code"
+            ],
+            "dailyCostLimit": 50,
+            "tags": [],
+            "createdAt": "2025-08-14T09:31:18.287Z",
+            "lastUsedAt": "2025-08-21T09:51:12.688Z",
+            "expiresAt": "",
+            "createdBy": "admin",
+            "usage": {
+                "total": {
+                    "requests": 55,
+                    "tokens": 1158123,
+                    "allTokens": 1158123,
+                    "inputTokens": 1739,
+                    "outputTokens": 22468,
+                    "cacheCreateTokens": 61994,
+                    "cacheReadTokens": 1071922,
+                    "cost": 0.8891015,
+                    "formattedCost": "$0.8891"
+                },
+                "daily": {
+                    "tokens": 1158123,
+                    "inputTokens": 1739,
+                    "outputTokens": 22468,
+                    "cacheCreateTokens": 61994,
+                    "cacheReadTokens": 1071922,
+                    "allTokens": 1158123,
+                    "requests": 55
+                },
+                "monthly": {
+                    "tokens": 10223693,
+                    "inputTokens": 115743,
+                    "outputTokens": 77025,
+                    "cacheCreateTokens": 1154562,
+                    "cacheReadTokens": 8876363,
+                    "allTokens": 10223693,
+                    "requests": 416
+                },
+                "averages": {
+                    "rpm": 0.04,
+                    "tpm": 16.73,
+                    "dailyRequests": 52,
+                    "dailyTokens": 24096
+                },
+                "today": {
+                    "requests": 55,
+                    "tokens": 1158123,
+                    "allTokens": 1158123,
+                    "inputTokens": 1739,
+                    "outputTokens": 22468,
+                    "cacheCreateTokens": 61994,
+                    "cacheReadTokens": 1071922,
+                    "cost": 0.8891015,
+                    "formattedCost": "$0.8891"
+                }
+            },
+            "currentConcurrency": 0,
+            "dailyCost": 0.8891015,
+            "currentWindowRequests": 0,
+            "currentWindowTokens": 0,
+            "windowStartTime": null,
+            "windowEndTime": null,
+            "windowRemainingSeconds": null
+        },
+        {
+            "id": "aee9c148-abeb-48d4-90da-6ffbb036466d",
+            "name": "张广东",
+            "description": "",
+            "tokenLimit": 0,
+            "concurrencyLimit": 0,
+            "rateLimitWindow": 0,
+            "rateLimitRequests": 0,
+            "isActive": true,
+            "claudeAccountId": "",
+            "claudeConsoleAccountId": "",
+            "geminiAccountId": "",
+            "openaiAccountId": "",
+            "permissions": "claude",
+            "enableModelRestriction": false,
+            "restrictedModels": [],
+            "enableClientRestriction": true,
+            "allowedClients": [
+                "claude_code"
+            ],
+            "dailyCostLimit": 50,
+            "tags": [],
+            "createdAt": "2025-08-20T01:56:41.434Z",
+            "lastUsedAt": "2025-08-20T06:44:01.854Z",
+            "expiresAt": "",
+            "createdBy": "admin",
+            "usage": {
+                "total": {
+                    "requests": 0,
+                    "tokens": 0,
+                    "allTokens": 0,
+                    "inputTokens": 0,
+                    "outputTokens": 0,
+                    "cacheCreateTokens": 0,
+                    "cacheReadTokens": 0,
+                    "cost": 0,
+                    "formattedCost": "$0.000000"
+                },
+                "daily": {
+                    "tokens": 0,
+                    "inputTokens": 0,
+                    "outputTokens": 0,
+                    "cacheCreateTokens": 0,
+                    "cacheReadTokens": 0,
+                    "allTokens": 0,
+                    "requests": 0
+                },
+                "monthly": {
+                    "tokens": 1045126,
+                    "inputTokens": 4072,
+                    "outputTokens": 13600,
+                    "cacheCreateTokens": 166120,
+                    "cacheReadTokens": 861334,
+                    "allTokens": 1045126,
+                    "requests": 55
+                },
+                "averages": {
+                    "rpm": 0.02,
+                    "tpm": 6.14,
+                    "dailyRequests": 27.5,
+                    "dailyTokens": 8836
+                },
+                "today": {
+                    "requests": 0,
+                    "tokens": 0,
+                    "allTokens": 0,
+                    "inputTokens": 0,
+                    "outputTokens": 0,
+                    "cacheCreateTokens": 0,
+                    "cacheReadTokens": 0,
+                    "cost": 0,
+                    "formattedCost": "$0.000000"
+                }
+            },
+            "currentConcurrency": 0,
+            "dailyCost": 0,
+            "currentWindowRequests": 0,
+            "currentWindowTokens": 0,
+            "windowStartTime": null,
+            "windowEndTime": null,
+            "windowRemainingSeconds": null
+        }
+    ]
+}

@@ -24,48 +24,50 @@
             "dailyCostLimit": 50,
             "tags": [],
             "createdAt": "2025-08-14T09:31:18.287Z",
-            "lastUsedAt": "2025-08-20T01:04:29.824Z",
+            "lastUsedAt": "2025-08-21T09:51:12.688Z",
             "expiresAt": "",
             "createdBy": "admin",
             "usage": {
                 "total": {
-                    "tokens": 8933087,
-                    "inputTokens": 113297,
-                    "outputTokens": 51117,
-                    "cacheCreateTokens": 1079073,
-                    "cacheReadTokens": 7689600,
-                    "allTokens": 8933087,
-                    "requests": 353,
-                    "cost": 7.168771949999999,
-                    "formattedCost": "$7.17"
+                    "requests": 416,
+                    "tokens": 10223693,
+                    "allTokens": 10223693,
+                    "inputTokens": 115743,
+                    "outputTokens": 77025,
+                    "cacheCreateTokens": 1154562,
+                    "cacheReadTokens": 8876363,
+                    "cost": 8.1947126,
+                    "formattedCost": "$8.19"
                 },
                 "daily": {
-                    "tokens": 15122,
-                    "inputTokens": 334,
-                    "outputTokens": 153,
-                    "cacheCreateTokens": 3304,
-                    "cacheReadTokens": 11331,
-                    "allTokens": 15122,
-                    "requests": 3
+                    "tokens": 1158123,
+                    "inputTokens": 1739,
+                    "outputTokens": 22468,
+                    "cacheCreateTokens": 61994,
+                    "cacheReadTokens": 1071922,
+                    "allTokens": 1158123,
+                    "requests": 55
                 },
                 "monthly": {
-                    "tokens": 8933087,
-                    "inputTokens": 113297,
-                    "outputTokens": 51117,
-                    "cacheCreateTokens": 1079073,
-                    "cacheReadTokens": 7689600,
-                    "allTokens": 8933087,
-                    "requests": 353
+                    "requests": 416,
+                    "tokens": 10223693,
+                    "allTokens": 10223693,
+                    "inputTokens": 115743,
+                    "outputTokens": 77025,
+                    "cacheCreateTokens": 1154562,
+                    "cacheReadTokens": 8876363,
+                    "cost": 8.1947126,
+                    "formattedCost": "$8.19"
                 },
                 "averages": {
                     "rpm": 0.04,
-                    "tpm": 19.03,
-                    "dailyRequests": 58.83,
-                    "dailyTokens": 27402.33
+                    "tpm": 16.73,
+                    "dailyRequests": 52,
+                    "dailyTokens": 24096
                 }
             },
             "currentConcurrency": 0,
-            "dailyCost": 0.0179401,
+            "dailyCost": 0.8891015,
             "currentWindowRequests": 0,
             "currentWindowTokens": 0,
             "windowStartTime": null,
@@ -73,8 +75,8 @@
             "windowRemainingSeconds": null
         },
         {
-            "id": "53d8545b-8309-4b13-8b75-4ecc04633f4f",
-            "name": "yewei",
+            "id": "aee9c148-abeb-48d4-90da-6ffbb036466d",
+            "name": "张广东",
             "description": "",
             "tokenLimit": 0,
             "concurrencyLimit": 0,
@@ -94,21 +96,21 @@
             ],
             "dailyCostLimit": 50,
             "tags": [],
-            "createdAt": "2025-08-15T09:58:36.065Z",
-            "lastUsedAt": "2025-08-19T01:53:04.999Z",
+            "createdAt": "2025-08-20T01:56:41.434Z",
+            "lastUsedAt": "2025-08-20T06:44:01.854Z",
             "expiresAt": "",
             "createdBy": "admin",
             "usage": {
                 "total": {
-                    "tokens": 3008073,
-                    "inputTokens": 30452,
-                    "outputTokens": 28813,
-                    "cacheCreateTokens": 349078,
-                    "cacheReadTokens": 2599730,
-                    "allTokens": 3008073,
-                    "requests": 194,
-                    "cost": 2.5305910999999996,
-                    "formattedCost": "$2.53"
+                    "requests": 55,
+                    "tokens": 1045126,
+                    "allTokens": 1045126,
+                    "inputTokens": 4072,
+                    "outputTokens": 13600,
+                    "cacheCreateTokens": 166120,
+                    "cacheReadTokens": 861334,
+                    "cost": 1.0859942,
+                    "formattedCost": "$1.09"
                 },
                 "daily": {
                     "tokens": 0,
@@ -120,19 +122,21 @@
                     "requests": 0
                 },
                 "monthly": {
-                    "tokens": 3008073,
-                    "inputTokens": 30452,
-                    "outputTokens": 28813,
-                    "cacheCreateTokens": 349078,
-                    "cacheReadTokens": 2599730,
-                    "allTokens": 3008073,
-                    "requests": 194
+                    "requests": 55,
+                    "tokens": 1045126,
+                    "allTokens": 1045126,
+                    "inputTokens": 4072,
+                    "outputTokens": 13600,
+                    "cacheCreateTokens": 166120,
+                    "cacheReadTokens": 861334,
+                    "cost": 1.0859942,
+                    "formattedCost": "$1.09"
                 },
                 "averages": {
-                    "rpm": 0.03,
-                    "tpm": 8.23,
-                    "dailyRequests": 38.8,
-                    "dailyTokens": 11853
+                    "rpm": 0.02,
+                    "tpm": 6.14,
+                    "dailyRequests": 27.5,
+                    "dailyTokens": 8836
                 }
             },
             "currentConcurrency": 0,

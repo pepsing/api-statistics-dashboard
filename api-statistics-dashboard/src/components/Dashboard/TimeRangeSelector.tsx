@@ -1,6 +1,6 @@
 import React from 'react';
 import { Radio, Space } from 'antd';
-import { CalendarOutlined, ClockCircleOutlined, BarChartOutlined } from '@ant-design/icons';
+import { ClockCircleOutlined, BarChartOutlined } from '@ant-design/icons';
 import { type TimeRange } from '../../types';
 
 interface TimeRangeSelectorProps {
@@ -20,25 +20,7 @@ export const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({
           今日
         </Space>
       ),
-      value: 'daily' as TimeRange,
-    },
-    {
-      label: (
-        <Space>
-          <CalendarOutlined />
-          本周
-        </Space>
-      ),
-      value: 'weekly' as TimeRange,
-    },
-    {
-      label: (
-        <Space>
-          <CalendarOutlined />
-          本月
-        </Space>
-      ),
-      value: 'monthly' as TimeRange,
+      value: 'today' as TimeRange,
     },
     {
       label: (

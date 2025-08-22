@@ -32,6 +32,8 @@ export interface ApiKeyData {
     total: UsageStats;
     daily: UsageStats;
     monthly: UsageStats;
+    today: UsageStats;
+    sevenDays: UsageStats;
     averages: AverageStats;
   };
   currentConcurrency: number;

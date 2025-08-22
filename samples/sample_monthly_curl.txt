@@ -1,0 +1,16 @@
+curl 'https://cc.digix.icu/admin/api-keys?timeRange=monthly' \
+  -H 'accept: */*' \
+  -H 'accept-language: en,zh-CN;q=0.9,zh;q=0.8' \
+  -H 'authorization: Bearer b5b7696d531af2be66125e4315686e1288623d0cb41ff1327f28bbf206f57d9d' \
+  -H 'content-type: application/json' \
+  -b 'ajs_anonymous_id=59b96cc5-56d2-4366-9dba-a49c392623ba' \
+  -H 'dnt: 1' \
+  -H 'priority: u=1, i' \
+  -H 'referer: https://cc.digix.icu/admin-next/api-keys' \
+  -H 'sec-ch-ua: "Not;A=Brand";v="99", "Google Chrome";v="139", "Chromium";v="139"' \
+  -H 'sec-ch-ua-mobile: ?0' \
+  -H 'sec-ch-ua-platform: "macOS"' \
+  -H 'sec-fetch-dest: empty' \
+  -H 'sec-fetch-mode: cors' \
+  -H 'sec-fetch-site: same-origin' \
+  -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36'

@@ -9,17 +9,23 @@ export const useSorting = (data: ProcessedApiKeyData[]) => {
   });
 
   const sortedData = useMemo(() => {
+    if (!sortConfig.field || !sortConfig.direction) {
+      return data; // 返回原始数据，不排序
+    }
     return DataTransformer.sortData(data, sortConfig.field, sortConfig.direction);
   }, [data, sortConfig]);
 
   const handleSort = (field: string) => {
     setSortConfig((prevConfig) => {
-      // 如果点击的是同一个字段，切换排序方向
+      // 如果点击的是同一个字段，在三种状态间切换
       if (prevConfig.field === field) {
-        return {
-          field,
-          direction: prevConfig.direction === 'asc' ? 'desc' : 'asc',
-        };
+        if (prevConfig.direction === 'desc') {
+          return { field, direction: 'asc' };
+        } else if (prevConfig.direction === 'asc') {
+          return { field: null, direction: null }; // 取消排序
+        } else {
+          return { field, direction: 'desc' }; // 从取消状态回到降序
+        }
       }
       
       // 如果是新字段，默认使用降序（对于数值字段更有意义）
