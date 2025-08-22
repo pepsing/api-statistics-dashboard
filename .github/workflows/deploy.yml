@@ -35,7 +35,7 @@ jobs:
       - name: Build
         run: |
           cd api-statistics-dashboard
-          npm run build
+          GITHUB_PAGES=true npm run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
